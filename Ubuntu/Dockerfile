@@ -1,49 +1,53 @@
 # Use Ubuntu image base
 FROM ubuntu:latest
 
-# Update package list and install dependencies must have
+# Environment variables for versions
+ARG GO_VERSION=1.21.5
+ARG NODE_VERSION=22.12.0
+
+# Update package list, install dependencies, and clean up
 RUN apt-get update && apt-get install -y \
     git \
-    gpg \
+    gnupg2 \
     wget \
     curl \
     nano \
     unzip \
-    gnupg2 \
     lsb-release \
-    ca-certificates
+    ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install oh-my-posh
 RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh \
     && chmod +x /usr/local/bin/oh-my-posh
 
-# Install oh-my-posh theme
-RUN mkdir -p ~/.poshthemes \
+# Install oh-my-posh themes
+RUN mkdir -p /etc/skel/.poshthemes \
     && wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip \
-    && unzip themes.zip -d ~/.poshthemes \
+    && unzip themes.zip -d /etc/skel/.poshthemes \
     && rm themes.zip
 
-# Create oh-my-posh config file
-RUN echo 'eval "$(oh-my-posh init bash --config ~/.poshthemes/paradox.omp.json)"' >> ~/.bashrc
+# Configure oh-my-posh
+RUN echo 'eval "$(oh-my-posh init bash --config /etc/skel/.poshthemes/paradox.omp.json)"' >> /etc/skel/.bashrc
 
-# Download and install Go
-RUN curl -fsSL https://golang.org/dl/go1.23.4.linux-amd64.tar.gz -o /tmp/go.tar.gz && \
+# Install Go
+RUN curl -fsSL https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz -o /tmp/go.tar.gz && \
     tar -C /usr/local -xzf /tmp/go.tar.gz && \
     rm /tmp/go.tar.gz
 
-# Config Go path
+# Add Go to PATH
 ENV PATH=$PATH:/usr/local/go/bin
 
-# Add NodeSource repository for Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+    apt-get install -y nodejs
 
-# Install Node.js and npm
-RUN apt-get install -y nodejs
+# Check versions
+RUN go version && node -v && npm -v
 
-# Check installed version
-RUN go version
-RUN node -v
-RUN npm -v
+# Set default shell
+SHELL ["/bin/bash", "-c"]
 
 # Default command
 CMD ["bash"]
