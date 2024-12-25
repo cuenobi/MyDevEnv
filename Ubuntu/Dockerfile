@@ -3,7 +3,7 @@ FROM ubuntu:latest
 
 # Set environment variables
 ARG GO_VERSION=1.21.5
-ARG NODE_VERSION=22.12.0
+ARG NODE_VERSION="22.12.0"
 ARG OHMY_THEME=rudolfs-light.omp.json
 
 # Update package list, install dependencies, and clean up
