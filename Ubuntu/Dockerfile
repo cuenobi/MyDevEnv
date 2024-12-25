@@ -9,11 +9,11 @@ ARG OHMY_THEME=rudolfs-light.omp.json
 # Update package list, install dependencies, and clean up
 RUN apt-get update && apt-get install -y \
     git \
-    gnupg2 \
     wget \
     curl \
     nano \
     unzip \
+    gnupg2 \
     lsb-release \
     ca-certificates && \
     apt-get clean && \
