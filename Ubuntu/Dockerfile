@@ -41,7 +41,7 @@ RUN curl -fsSL https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz -o /tmp/
 ENV PATH=$PATH:/usr/local/go/bin
 
 # Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION} | bash - && \
     apt-get install -y nodejs
 
 # Check versions
