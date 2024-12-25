@@ -1,9 +1,10 @@
 # Use Ubuntu image base
 FROM ubuntu:latest
 
-# Environment variables for versions
+# Set environment variables
 ARG GO_VERSION=1.21.5
 ARG NODE_VERSION=22.12.0
+ARG OHMY_THEME=rudolfs-light.omp.json
 
 # Update package list, install dependencies, and clean up
 RUN apt-get update && apt-get install -y \
@@ -29,7 +30,7 @@ RUN mkdir -p /etc/skel/.poshthemes \
     && rm themes.zip
 
 # Configure oh-my-posh
-RUN echo 'eval "$(oh-my-posh init bash --config /etc/skel/.poshthemes/paradox.omp.json)"' >> /etc/skel/.bashrc
+RUN echo 'eval "$(oh-my-posh init bash --config /etc/skel/.poshthemes/${OHMY_THEME})"' >> /etc/skel/.bashrc
 
 # Install Go
 RUN curl -fsSL https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz -o /tmp/go.tar.gz && \
